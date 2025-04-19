@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: classificador-de-frutas
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn run:app
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.9
+      - key: PORT 
+        value: "10000"
+    region: us-east-1
+    size: 1x
+    memory: 1024
+    cpu: 1
+    count: 1

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Classificação de Frutas</title>
+    
+    <link rel="icon" href="{{ url_for('static', filename='img/favicon.ico') }}" type="image/x-icon">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="header">
+        <img src="{{ url_for('static', filename='img/fruit-logo.png') }}" alt="Logo Fruta" width="90" style="margin-right: 18px;">
+        <h2>Classificação de Frutas</h2>
+    </div>
+    
+    <div class="container">
+        <div class="upload-area" id="drop-zone">
+            <form id="upload-form" action="/classify" method="POST" enctype="multipart/form-data">
+                <input type="file" name="image" id="file-upload" accept="image/*" style="display: none;">
+                <label for="file-upload">📷 Escolher Imagem</label>
+                <p>Ou arraste e solte sua imagem aqui</p>
+                
+                <div id="preview-container">
+                    <img id="image-preview" src="#" alt="Prévia" style="display: none;">
+                </div>
+                
+                <p class="loading-message" id="loading" style="display: none;">
+                    Processando imagem, por favor aguarde...
+                </p>
+
+                <button type="submit" id="submit-btn">Enviar</button>
+                <button type="button" id="remove-file" style="display: none;">Remover imagem</button>
+            </form>
+        </div>        
+
+        <div id="result-container" style="display: none;">
+            <h3>Resultado da Classificação</h3>
+            <ul id="result-list"></ul>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>

@@ -1,0 +1,7 @@
+__pycache__/
+*.pyc
+.env
+venv/
+.vscode/
+*.pyc
+webapp\model\modelo_pesos.pth

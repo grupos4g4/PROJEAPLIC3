@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resultado da Classificação</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/result.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Resultado da Classificação</h1>
+
+        {% for item in results %}
+        <div class="result-item">
+            <strong>Nome da Fruta:</strong> {{ item.fruit_name }} <br>
+            <strong>Probabilidade:</strong> {{ item.probability }} <br>
+
+            {% if item.nutritional_info %}
+            <div class="nutrition-info">
+                <h3>Informações Nutricionais (100g)</h3>
+                <ul>
+                    {% for key, value in item.nutritional_info.items() %}
+                        {% if key != "Fruta (100g)" %}  <!-- Ignorar a chave com o nome da fruta -->
+                        <li><strong>{{ key }}:</strong> {{ value }}</li>
+                        {% endif %}
+                    {% endfor %}
+                </ul>
+            </div>
+            {% else %}
+            <p><em>Informações nutricionais não disponíveis.</em></p>
+            {% endif %}
+        </div>
+        <hr>
+        {% endfor %}
+
+        <div class="chart-container">
+            <canvas id="probabilityChart"></canvas>
+        </div>
+
+        <a href="/" class="back-button">Voltar para Início</a>
+    </div>
+
+    <script>
+        const results = JSON.parse('{{ results | tojson | safe }}');
+
+        const labels = results.map(item => item.fruit_name);
+        const data = results.map(item => parseFloat(item.probability.replace('%', '')));
+
+        const ctx = document.getElementById('probabilityChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Probabilidade (%)',
+                    data: data,
+                    backgroundColor: ['#4CAF50', '#FF9800', '#F44336'],
+                    borderColor: ['#388E3C', '#F57C00', '#D32F2F'],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 100
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
+

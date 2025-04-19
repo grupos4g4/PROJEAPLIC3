@@ -1,46 +1,152 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Classificação de Frutas</title>
-    
-    <link rel="icon" href="{{ url_for('static', filename='img/favicon.ico') }}" type="image/x-icon">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Classificação de Frutas</title>
+
+  <link rel="icon" href="{{ url_for('static', filename='img/favicon.ico') }}" type="image/x-icon"/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}"/>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background-image: url('{{ url_for('static', filename='img/moldura-frutas-bg.jpg') }}');
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-position: center;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .framed-content {
+      background-color: rgba(255, 255, 255, 0.95);
+      padding: 30px;
+      border-radius: 16px;
+      max-width: 800px;
+      width: 90%;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+    }
+
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 30px;
+    }
+
+    .header img {
+      margin-right: 18px;
+    }
+
+    h2 {
+      margin: 0;
+    }
+
+    .upload-area {
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    .upload-btn {
+      display: inline-block;
+      background-color: #4CAF50;
+      color: white;
+      padding: 12px 20px;
+      font-weight: 600;
+      font-size: 15px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      text-align: center;
+      box-shadow: 0 3px 5px rgba(0,0,0,0.2);
+      border: none;
+      user-select: none;
+      margin-top: 10px;
+    }
+
+    .upload-btn:hover {
+      background-color: #45a049;
+    }
+
+    .upload-info {
+      text-align: center;
+      font-weight: 600;
+      font-size: 16px;
+      color: #b71c1c;
+      margin-top: 10px;
+    }
+
+    #submit-btn, #remove-file {
+      margin-top: 20px;
+      padding: 10px 18px;
+      font-weight: 600;
+      font-size: 14px;
+      border-radius: 6px;
+      border: none;
+      background-color: #1976D2;
+      color: white;
+      cursor: pointer;
+    }
+
+    #submit-btn:hover, #remove-file:hover {
+      background-color: #1565C0;
+    }
+
+    #result-container {
+      margin-top: 30px;
+    }
+
+    h3 {
+      text-align: center;
+    }
+
+    #preview-container img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 8px;
+      margin-top: 15px;
+    }
+  </style>
 </head>
 <body>
+  <div class="framed-content">
     <div class="header">
-        <img src="{{ url_for('static', filename='img/fruit-logo.png') }}" alt="Logo Fruta" width="90" style="margin-right: 18px;">
-        <h2>Classificação de Frutas</h2>
+      <!-- <img src="{{ url_for('static', filename='img/fruit-logo.png') }}" alt="Logo Fruta" width="90" /> -->
+      <h2>Classificação de Frutas</h2>
     </div>
-    
-    <div class="container">
-        <div class="upload-area" id="drop-zone">
-            <form id="upload-form" action="/classify" method="POST" enctype="multipart/form-data">
-                <input type="file" name="image" id="file-upload" accept="image/*" style="display: none;">
-                <label for="file-upload">📷 Escolher Imagem</label>
-                <p>Ou arraste e solte sua imagem aqui</p>
-                
-                <div id="preview-container">
-                    <img id="image-preview" src="#" alt="Prévia" style="display: none;">
-                </div>
-                
-                <p class="loading-message" id="loading" style="display: none;">
-                    Processando imagem, por favor aguarde...
-                </p>
 
-                <button type="submit" id="submit-btn">Enviar</button>
-                <button type="button" id="remove-file" style="display: none;">Remover imagem</button>
-            </form>
-        </div>        
+    <div class="upload-area" id="drop-zone">
+      <form id="upload-form" action="/classify" method="POST" enctype="multipart/form-data">
+        <input type="file" name="image" id="file-upload" accept=".jpg,image/jpeg" style="display: none;" />
+        <label for="file-upload" class="upload-btn">📷 Escolher Imagem</label>
+        <p>Ou arraste e solte sua imagem aqui</p>
 
-        <div id="result-container" style="display: none;">
-            <h3>Resultado da Classificação</h3>
-            <ul id="result-list"></ul>
+        <div class="upload-info">Somente imagens no formato <strong>.JPG</strong> são aceitas</div>
+
+        <div id="preview-container">
+          <img id="image-preview" src="#" alt="Prévia" style="display: none;" />
         </div>
+
+        <p class="loading-message" id="loading" style="display: none;">
+          Processando imagem, por favor aguarde...
+        </p>
+
+        <button type="submit" id="submit-btn">Enviar</button>
+        <button type="button" id="remove-file" style="display: none;">Remover imagem</button>
+      </form>
     </div>
 
-    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+    <div id="result-container" style="display: none;">
+      <h3>Resultado da Classificação</h3>
+      <ul id="result-list"></ul>
+    </div>
+  </div>
+
+  <script src="{{ url_for('static', filename='js/script.js') }}"></script>
 </body>
 </html>

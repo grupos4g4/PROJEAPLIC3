@@ -6,6 +6,84 @@
     <title>Resultado da Classificação</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/result.css') }}">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f2f4f8;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: auto;
+        }
+
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+        }
+
+        .result-item {
+            background-color: #fff;
+            padding: 20px;
+            margin-bottom: 25px;
+            border-radius: 10px;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .result-item strong {
+            color: #2c3e50;
+        }
+
+        .nutrition-info {
+            margin-top: 15px;
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 8px;
+        }
+
+        .nutrition-info h3 {
+            margin-top: 0;
+            color: #34495e;
+        }
+
+        .nutrition-info ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .nutrition-info li {
+            margin-bottom: 5px;
+        }
+
+        .chart-container {
+            background-color: #fff;
+            padding: 20px;
+            margin-top: 40px;
+            border-radius: 10px;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .back-button {
+            display: inline-block;
+            margin: 30px auto 0;
+            padding: 12px 20px;
+            background-color: #3498db;
+            color: #fff;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background-color 0.3s;
+            text-align: center;
+        }
+
+        .back-button:hover {
+            background-color: #2980b9;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
@@ -13,15 +91,15 @@
 
         {% for item in results %}
         <div class="result-item">
-            <strong>Nome da Fruta:</strong> {{ item.fruit_name }} <br>
-            <strong>Probabilidade:</strong> {{ item.probability }} <br>
+            <p><strong>Nome da Fruta:</strong> {{ item.fruit_name }}</p>
+            <p><strong>Probabilidade:</strong> {{ item.probability }}</p>
 
             {% if item.nutritional_info %}
             <div class="nutrition-info">
                 <h3>Informações Nutricionais (100g)</h3>
                 <ul>
                     {% for key, value in item.nutritional_info.items() %}
-                        {% if key != "Fruta (100g)" %}  <!-- Ignorar a chave com o nome da fruta -->
+                        {% if key != "Fruta (100g)" %}
                         <li><strong>{{ key }}:</strong> {{ value }}</li>
                         {% endif %}
                     {% endfor %}
@@ -31,14 +109,15 @@
             <p><em>Informações nutricionais não disponíveis.</em></p>
             {% endif %}
         </div>
-        <hr>
         {% endfor %}
 
         <div class="chart-container">
             <canvas id="probabilityChart"></canvas>
         </div>
 
-        <a href="/" class="back-button">Voltar para Início</a>
+        <div style="text-align: center;">
+            <a href="/" class="back-button">Voltar para Início</a>
+        </div>
     </div>
 
     <script>
@@ -55,17 +134,33 @@
                 datasets: [{
                     label: 'Probabilidade (%)',
                     data: data,
-                    backgroundColor: ['#4CAF50', '#FF9800', '#F44336'],
-                    borderColor: ['#388E3C', '#F57C00', '#D32F2F'],
-                    borderWidth: 1
+                    backgroundColor: '#3498db',
+                    borderColor: '#2980b9',
+                    borderWidth: 1,
+                    borderRadius: 5
                 }]
             },
             options: {
                 responsive: true,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
                 scales: {
                     y: {
                         beginAtZero: true,
-                        max: 100
+                        max: 100,
+                        title: {
+                            display: true,
+                            text: 'Probabilidade (%)'
+                        }
+                    },
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Frutas'
+                        }
                     }
                 }
             }
@@ -73,4 +168,3 @@
     </script>
 </body>
 </html>
-
